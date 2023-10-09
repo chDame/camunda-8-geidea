@@ -8,7 +8,7 @@ export class ProcessService {
   lastFetchProcesses: number = 0;
 
   getProcessBpmnId = ():string|null => {
-    let process:IProcess|null = store.getState().process.currentProcess;
+    let process: IProcess | null = store.getState().process.currentProcess;
     return process ? process.bpmnProcessId : null;
   }
   getStartProcessesUrl = ():string|null => {
@@ -50,6 +50,7 @@ export class ProcessService {
     return store.getState().process.processes;
   }
   instantiate = (data: any): AppThunk => async dispatch => {
+    data.initiator = store.getState().auth.data!.username;
     api.post(this.getStartProcessesUrl()!, data).then(response => {
       dispatch(setProcess(null));
     }).catch(error => {
