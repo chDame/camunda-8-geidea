@@ -4,7 +4,7 @@ using Zeebe.Client.Accelerator.Attributes;
 
 namespace tasklistDotNetReact.Services
 {
-  [JobType("mail")]
+  [JobType("sendEmail")]
   public class MailWorker : IAsyncZeebeWorkerWithResult<JsonNode>
 
   {
