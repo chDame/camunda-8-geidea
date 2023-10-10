@@ -37,8 +37,10 @@ namespace tasklistDotNetReact.Services
 				  }
 
 				  _hubContext.Clients.Group("demo"/*job.ProcessInstanceKey.ToString()*/).SendAsync("newTask",
-					  headers["io.camunda.zeebe:formKey"], job.Key, job.ProcessInstanceKey,
-					  headers.ContainsKey("io.camunda.zeebe:assignee") ? headers["io.camunda.zeebe:assignee"] : ""
+				new Dictionary<string, string>() { { "formkey", headers["io.camunda.zeebe:formKey"].ToString() } ,
+													{"jobKey",job.Key.ToString() }, 
+													{"jobProcessInstanceKey",job.ProcessInstanceKey.ToString() },
+													{ "assignee",headers.ContainsKey("io.camunda.zeebe:assignee") ? headers["io.camunda.zeebe:assignee"].ToString() : ""} }
 					  );
 
 			  })

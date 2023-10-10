@@ -7,23 +7,23 @@ import { AdItem } from './ad-item';
 @Injectable()
 export class AdService {
   getAds() {
-    return [
-      new AdItem(
-        HeroProfileComponent,
-        { name: 'Bombasto', bio: 'Brave as they come' }
-      ),
-      new AdItem(
-        HeroProfileComponent,
-        { name: 'Dr. IQ', bio: 'Smart as they come' }
-      ),
-      new AdItem(
-        HeroJobAdComponent,
-        { headline: 'Hiring for several positions', body: 'Submit your resume today!' }
-      ),
-      new AdItem(
-        HeroJobAdComponent,
-        { headline: 'Openings in all departments', body: 'Apply today' }
-      )
-    ];
+    return {
+      nafathAuthentication: new AdItem(HeroProfileComponent, {
+        name: 'Bombasto',
+        bio: 'Brave as they come',
+      }),
+      setupStores: new AdItem(HeroProfileComponent, {
+        name: 'Dr. IQ',
+        bio: 'Smart as they come',
+      }),
+      step1: new AdItem(HeroJobAdComponent, {
+        headline: 'Hiring for several positions',
+        body: 'Submit your resume today!',
+      }),
+      registerMailAndPassword: new AdItem(HeroJobAdComponent, {
+        headline: 'Openings in all departments',
+        body: 'Apply today',
+      }),
+    };
   }
 }

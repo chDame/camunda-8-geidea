@@ -8,15 +8,12 @@ import {
 import { BehaviorSubject, from } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { chatMesage } from './chatMesage';
-import { MessagePackHubProtocol } from '@microsoft/signalr-protocol-msgpack';
 @Injectable({
   providedIn: 'root',
 })
 export class SignalrService {
   private hubConnection!: HubConnection;
-  public messages: BehaviorSubject<chatMesage[]> = new BehaviorSubject<
-    chatMesage[]
-  >([]);
+  public messages: BehaviorSubject<any> = new BehaviorSubject<any>([]);
   private connectionUrl = 'https://localhost:7009/hub';
   // private apiUrl = 'https://localhost:44319/api/chat';
 
@@ -52,7 +49,7 @@ export class SignalrService {
     return (
       new HubConnectionBuilder()
         .withUrl(this.connectionUrl)
-        .withHubProtocol(new MessagePackHubProtocol())
+        // .withHubProtocol(new MessagePackHubProtocol())
         //  .configureLogging(LogLevel.Trace)
         .build()
     );
@@ -87,11 +84,11 @@ export class SignalrService {
     //   newValue.push(data);
     //   this.messages.next(newValue);
     // });
-    this.hubConnection.on('newTask', (data: chatMesage) => {
+    this.hubConnection.on('newTask', (data: any) => {
       console.log('message received from Hub');
-      let newValue = this.messages.value;
-      newValue.push(data);
-      this.messages.next(newValue);
+      // let newValue = this.messages.value;
+      // newValue.push(data);
+      this.messages.next(data);
     });
     // this.hubConnection.on('newUserConnected', (_) => {
     //   console.log('new user connected');

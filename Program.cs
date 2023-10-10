@@ -14,9 +14,11 @@ builder.Services.AddCors(options =>
   options.AddPolicy(name: "_myAllowSpecificOrigins",
                     policy =>
                     {
-                      policy.WithOrigins("https://localhost:44403").AllowAnyHeader()
-                                                  .AllowAnyMethod();
-					});
+                        policy.WithOrigins("https://localhost:44403").AllowAnyHeader()
+                                                    .AllowAnyMethod().SetIsOriginAllowed(origin => true).AllowCredentials(); 
+                                                  // allow any origin .AllowCredentials()); // allow credentials;
+
+                    });
 });
 // Add services to the container.
 

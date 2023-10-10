@@ -13,7 +13,7 @@ import { SignalrService } from './signalR.service';
   `,
 })
 export class AppComponent implements OnInit {
-  ads: AdItem[] = [];
+  ads: any;
 
   constructor(
     private adService: AdService,

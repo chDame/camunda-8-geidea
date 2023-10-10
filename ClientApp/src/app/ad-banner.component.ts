@@ -15,7 +15,7 @@ import { SignalrService } from './signalR.service';
   `,
 })
 export class AdBannerComponent implements OnInit, OnDestroy {
-  @Input() ads: AdItem[] = [];
+  @Input() ads!: any;
 
   currentAdIndex = -1;
 
@@ -24,7 +24,7 @@ export class AdBannerComponent implements OnInit, OnDestroy {
   private clearTimer: VoidFunction | undefined;
   constructor(public signalR: SignalrService) {}
   ngOnInit(): void {
-    this.loadComponent();
+    this.loadComponent('step1');
     this.getAds();
   }
 
@@ -32,9 +32,12 @@ export class AdBannerComponent implements OnInit, OnDestroy {
     this.clearTimer?.();
   }
 
-  loadComponent() {
-    this.currentAdIndex = (this.currentAdIndex + 1) % this.ads.length;
-    const adItem = this.ads[this.currentAdIndex];
+  loadComponent(formKey: string) {
+    console.log(formKey);
+    console.log(this.ads);
+
+    // this.currentAdIndex = (this.currentAdIndex + 1) % this.ads.length;
+    const adItem = this.ads[formKey];
 
     const viewContainerRef = this.adHost.viewContainerRef;
     viewContainerRef.clear();
@@ -48,7 +51,9 @@ export class AdBannerComponent implements OnInit, OnDestroy {
   getAds() {
     this.signalR.messages.asObservable().subscribe((data) => {
       console.log(data);
-      this.loadComponent();
+      if (data && data['formkey']) {
+        this.loadComponent(data['formkey']);
+      }
     });
     // const interval = setInterval(() => {
     //   this.loadComponent();
