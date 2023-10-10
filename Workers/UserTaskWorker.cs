@@ -25,9 +25,16 @@ namespace tasklistDotNetReact.Services
         .Handler((c, job) =>
         {
           Dictionary<string, string> headers = JsonConvert.DeserializeObject<Dictionary<string, string>>(job.CustomHeaders);
-          Console.WriteLine("User task : " + headers["io.camunda.zeebe:formKey"]);
+          Console.WriteLine("User task form " + headers["io.camunda.zeebe:formKey"]);
+          Console.WriteLine("User task job key " + job.Key);
+          Console.WriteLine("User task process instance key " + job.ProcessInstanceKey);
+          if (headers.ContainsKey("io.camunda.zeebe:assignee"))
+          {
+            Console.WriteLine("assignee " + headers["io.camunda.zeebe:assignee"]);
+          }
+
         })
-        .MaxJobsActive(1)
+        .MaxJobsActive(100)
         .Name(Environment.MachineName)
         .PollInterval(TimeSpan.FromMilliseconds(100))
         .Timeout(TimeSpan.FromMinutes(1))
