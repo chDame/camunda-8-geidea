@@ -28,6 +28,7 @@ builder.Services.AddTransient(typeof(TemplateService));
 builder.Services.AddTransient(typeof(MockService));
 builder.Services.AddTransient(typeof(FileService));
 builder.Services.AddTransient(typeof(ZeebeClientProvider));
+builder.Services.AddHostedService<UserTaskWorker>();
 
 builder.Services.BootstrapZeebe(builder.Configuration.GetSection("ZeebeConfiguration"), o => {
   IConfigurationSection clientConf=builder.Configuration.GetSection("ZeebeConfiguration").GetSection("Client");
@@ -45,7 +46,11 @@ builder.Services.BootstrapZeebe(builder.Configuration.GetSection("ZeebeConfigura
                       .Build()
     }
   };
+
+
 }, typeof(Program).Assembly);
+
+
 
 var app = builder.Build();
 
