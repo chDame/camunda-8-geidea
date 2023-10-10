@@ -4,9 +4,10 @@ namespace tasklistDotNetReact.Services
 {
 	public class SignalrHub : Hub
 	{
-		public async Task NewMessage(string user, string message)
+		public async Task SubscribeToTasks(string processInstanceKey)
 		{
-			await Clients.All.SendAsync("messageReceived", user, message);
+			await Clients.User(processInstanceKey).SendAsync("messageReceived");
+			//await Clients.All.SendAsync("messageReceived", user, message);
 		}
 	}
 }
