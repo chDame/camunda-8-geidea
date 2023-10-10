@@ -17,9 +17,8 @@ namespace tasklistDotNetReact.Services
     {
       // get variables as declared (SimpleJobPayload)
       JsonNode variables = job.getVariables<JsonNode>();
-      variables["firstname"] = "bob";
-      variables["generator"] = "worker";
-      variables["mailId"] = await mailService.sendMailAsync("christophe.dame@camunda.com", "subject", "NewMail", "EN", variables);
+
+      variables["mailId"] = await mailService.sendMailAsync(variables["usermail"]!.ToString(), variables["subject"]!.ToString(), variables["template"]!.ToString(), "EN", variables);
       // execute business service etc.
       // var result = await _myApiService.DoSomethingAsync(variables.CustomerNo, cancellationToken);
       return variables;

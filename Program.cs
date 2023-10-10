@@ -7,6 +7,8 @@ using Zeebe.Client.Impl.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSignalR();
+
 builder.Services.AddCors(options =>
 {
   options.AddPolicy(name: "_myAllowSpecificOrigins",
@@ -77,6 +79,8 @@ app.UseCors("_myAllowSpecificOrigins");
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Auth}/{action=Index}/{id?}");
+
+app.MapHub<SignalrHub>("/hub");
 
 app.MapFallbackToFile("index.html"); ;
 

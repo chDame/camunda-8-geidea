@@ -7,5 +7,6 @@ namespace tasklistDotNetReact.Dtos.Models
 	public class LeadValidationResponse
 	{
 		public Guid LeadId { get; set; }
+		public bool? ElmCheck { get; set; }
 	}
 }

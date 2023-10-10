@@ -20,14 +20,14 @@ namespace tasklistDotNetReact.Services
 			JsonNode variables = job.getVariables<JsonNode>();
 
 
-			var leadId = await dueDilligenceService.LeadCreate_ELMCheck(new LeadValidationRequest()
+			var lead = await dueDilligenceService.LeadCreate_ELMCheck(new LeadValidationRequest()
 			{
-				NationalId = variables["nationalId"].ToString(),
+				NationalId = variables["nationalId"]!.ToString(),
 				CountryPrefix = "+966",
-				PhoneNumber = variables["phoneNumber"].ToString()
+				PhoneNumber = variables["phoneNumber"]!.ToString()
 			});
 
-			variables["phoneIdValid"] = (leadId is not null && leadId.LeadId != Guid.Empty);
+			variables["phoneIdValid"] = (lead is not null && lead.ElmCheck.HasValue && lead.ElmCheck.Value);
 
 			return variables;
 		}
