@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Configuration;
+using tasklistDotNetReact.Common;
 using tasklistDotNetReact.Services;
 using Zeebe.Client.Accelerator.Extensions;
 using Zeebe.Client.Accelerator.Options;
@@ -12,9 +14,11 @@ builder.Services.AddCors(options =>
                     {
                       policy.WithOrigins("https://localhost:44403").AllowAnyHeader()
                                                   .AllowAnyMethod();
-                    });
+					});
 });
 // Add services to the container.
+
+builder.Services.AddOptions<UrlSettings>().Bind(builder.Configuration.GetSection("UrlSettings"));
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddTransient(typeof(ZeebeConfigProvider));
@@ -29,6 +33,10 @@ builder.Services.AddTransient(typeof(MockService));
 builder.Services.AddTransient(typeof(FileService));
 builder.Services.AddTransient(typeof(ZeebeClientProvider));
 builder.Services.AddHostedService<UserTaskWorker>();
+
+builder.Services.AddScoped<HttpClient>();
+builder.Services.AddTransient<IDueDilligenceService, DueDilligenceService>();
+
 
 builder.Services.BootstrapZeebe(builder.Configuration.GetSection("ZeebeConfiguration"), o => {
   IConfigurationSection clientConf=builder.Configuration.GetSection("ZeebeConfiguration").GetSection("Client");
