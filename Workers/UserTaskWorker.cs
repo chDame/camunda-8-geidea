@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNet.SignalR;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using System.Text.Json.Nodes;
 using Zeebe.Client.Accelerator.Abstractions;
@@ -37,7 +36,7 @@ namespace tasklistDotNetReact.Services
 					  Console.WriteLine("assignee " + headers["io.camunda.zeebe:assignee"]);
 				  }
 
-				  _hubContext.Clients.User(job.ProcessInstanceKey.ToString()).SendAsync("newTask",
+				  _hubContext.Clients.Group("demo"/*job.ProcessInstanceKey.ToString()*/).SendAsync("newTask",
 					  headers["io.camunda.zeebe:formKey"], job.Key, job.ProcessInstanceKey,
 					  headers.ContainsKey("io.camunda.zeebe:assignee") ? headers["io.camunda.zeebe:assignee"] : ""
 					  );
