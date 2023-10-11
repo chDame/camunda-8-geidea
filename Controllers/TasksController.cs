@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using tasklistDotNetReact.DataAccess.Entities;
 using tasklistDotNetReact.Services;
 
 namespace tasklistDotNetReact.Controllers
