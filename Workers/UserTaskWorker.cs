@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using System.Text.Json.Nodes;
+using tasklistDotNetReact.DataAccess.Entities;
 using Zeebe.Client.Accelerator.Abstractions;
 using Zeebe.Client.Accelerator.Attributes;
 using Zeebe.Client.Api.Worker;
@@ -34,6 +35,7 @@ namespace tasklistDotNetReact.Services
 
 				  TaskModel task = new()
 				  {
+					  processInstanceKey = job.ProcessInstanceKey.ToString(),
 					  assignee = headers.ContainsKey("io.camunda.zeebe:assignee") ? headers["io.camunda.zeebe:assignee"].ToString() : "",
 					  formKey = headers["io.camunda.zeebe:formKey"].ToString(),
 					  jobKey = job.Key.ToString(),
@@ -42,7 +44,7 @@ namespace tasklistDotNetReact.Services
 
 				  await _hubContext.Clients.Group(job.ProcessInstanceKey.ToString()).SendAsync("newTask", task);
 
-				  await _taskListService.AddTask(job.ProcessInstanceKey.ToString(), task);
+				  await _taskListService.AddTask(task);
 
 			  })
 			  .MaxJobsActive(100)

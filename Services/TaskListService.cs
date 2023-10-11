@@ -13,50 +13,37 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using tasklistDotNetReact.Common;
+using tasklistDotNetReact.DataAccess.Entities;
+using tasklistDotNetReact.DataAccess;
+using Microsoft.EntityFrameworkCore;
 
 namespace tasklistDotNetReact.Services
 {
 	public class TaskListService
 	{
 		private readonly ZeebeClientProvider _provider;
-		private readonly IHttpContextAccessor _httpContextAccessor;
+		private readonly AppDBContext _dBContext;
 
-		public TaskListService(ZeebeClientProvider provider, IHttpContextAccessor httpContextAccessor)
+		public TaskListService(ZeebeClientProvider provider, AppDBContext dBContext)
 		{
 			_provider = provider;
-			_httpContextAccessor = httpContextAccessor;
+			_dBContext = dBContext;
 		}
 
-		public async System.Threading.Tasks.Task AddTask(string processInstanceKey, TaskModel task)
+		public async System.Threading.Tasks.Task AddTask(TaskModel task)
 		{
-			ProcessInstanceTasksModel processInstanceTasks = new();
-			processInstanceTasks = _httpContextAccessor.HttpContext.Session.GetObjectFromJson<ProcessInstanceTasksModel>(processInstanceKey);
-
-			if (processInstanceTasks is null)
-			{
-				processInstanceTasks = new ProcessInstanceTasksModel
-				{
-					processInstanceKey = processInstanceKey,
-					tasks = new List<TaskModel> { task }
-				};
-			}
-			else
-			{
-				processInstanceTasks.tasks.Add(task);
-			}
-
-			_httpContextAccessor.HttpContext.Session.SetObjectAsJson(processInstanceKey, task);
+			_dBContext.TaskModels.Add(task);
+			await _dBContext.SaveChangesAsync();
 		}
 
-		public async Task<TaskModel> GetTask(string jobKey, string processInstanceKey)
+		public async Task<TaskModel?> GetTask(string jobKey, string processInstanceKey)
 		{
-			throw new NotImplementedException();
+			return _dBContext.TaskModels.FirstOrDefault(t => t.processInstanceKey == processInstanceKey && t.jobKey == jobKey);
 		}
 
 		public async Task<List<TaskModel>> GetTaskByProcessInstanceKey(string processInstanceKey)
 		{
-			var processInstanceTasks = _httpContextAccessor.HttpContext.Session.GetObjectFromJson<ProcessInstanceTasksModel>(processInstanceKey);
-			return processInstanceTasks.tasks;
+			return _dBContext.TaskModels.Where(t => t.processInstanceKey == processInstanceKey).ToList();
 		}
 
 		public async System.Threading.Tasks.Task CompleteTask(string jobKey, Dictionary<string, object> variables)
@@ -67,20 +54,6 @@ namespace tasklistDotNetReact.Services
 				Send();
 		}
 
-	}
-
-	public class ProcessInstanceTasksModel
-	{
-		public string processInstanceKey { get; set; }
-		public List<TaskModel> tasks { get; set; }
-	}
-
-	public class TaskModel
-	{
-		public string jobKey { get; set; }
-		public string formKey { get; set; }
-		public string assignee { get; set; }
-		public Dictionary<string, object> variables { get; set; }
 	}
 }
 
