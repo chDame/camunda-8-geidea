@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Grpc.Core;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using tasklistDotNetReact.Services;
 
@@ -52,10 +54,14 @@ namespace tasklistDotNetReact.Controllers
 		[HttpPost("{bpmnProcessId}/start")]
 		public async Task<JsonResult> CreateProcessInstance(string bpmnProcessId, [FromBody] Dictionary<string, object> variables)
 		{
-			//Get IP address
-#pragma warning disable 8602
-			var userIP = Request.HttpContext.Connection.RemoteIpAddress.ToString();
-#pragma warning restore 8602
+			//			//Get IP address
+			//#pragma warning disable 8602
+			//			var userIP = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+			//#pragma warning restore 8602
+
+			// Retreive server / local IP address
+			var feature = HttpContext.Features.Get<IHttpConnectionFeature>();
+			var userIP = feature?.LocalIpAddress?.ToString();
 
 			var correlationId = Guid.NewGuid().ToString();
 			variables.Add("correlationId", correlationId);
