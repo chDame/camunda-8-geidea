@@ -13,8 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSignalR();
 
 // in memory database used for simplicity, change to a real db for production applications
-builder.Services.AddDbContext<AppDBContext>
-	(o => o.UseInMemoryDatabase("MyDatabase"));
+builder.Services.AddDbContext<AppDBContext>(o => o.UseInMemoryDatabase("MyDatabase"), ServiceLifetime.Singleton);
 
 builder.Services.AddCors(options =>
 {
