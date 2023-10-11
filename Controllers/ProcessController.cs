@@ -52,6 +52,8 @@ namespace tasklistDotNetReact.Controllers
     [HttpPost("{bpmnProcessId}/start")]
     public async Task<JsonResult> CreateProcessInstance(string bpmnProcessId, [FromBody] Dictionary<string, object> variables)
     {
+      var correlationId = Guid.NewGuid().ToString();
+      variables.Add("correlationId", correlationId);
       var processInstance = await _zeebeClientProvider.GetZeebeClient()
           .NewCreateProcessInstanceCommand()
           .BpmnProcessId(bpmnProcessId)
@@ -59,7 +61,7 @@ namespace tasklistDotNetReact.Controllers
           .Variables(System.Text.Json.JsonSerializer.Serialize(variables))
           .Send();
 
-      return new JsonResult(new { ProcessInstanceKey = processInstance.ProcessInstanceKey });
+      return new JsonResult(new { ProcessInstanceKey = processInstance.ProcessInstanceKey, correlationId = correlationId });
     }
 
     [HttpGet("definition/latest")]

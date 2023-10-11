@@ -22,11 +22,11 @@ export class CreateAccountComponent implements OnInit {
         nationalId: this.nationalId,
       })
       .subscribe((data: any) => {
-        this.listenAboutTasksRequest(data.processInstanceKey.toString());
+        this.listenAboutTasksRequest(data.correlationId.toString());
         console.log(data);
       });
   }
-  private listenAboutTasksRequest(processInstanceKey: string): void {
-    this.signalR.listenTasks(processInstanceKey);
+  private listenAboutTasksRequest(correlationId: string): void {
+    this.signalR.listenTasks(correlationId);
   }
 }

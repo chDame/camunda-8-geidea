@@ -42,7 +42,7 @@ namespace tasklistDotNetReact.Services
 					  variables = JsonConvert.DeserializeObject<Dictionary<string, object>>(job.Variables)
 				  };
 
-				  await _hubContext.Clients.Group(job.ProcessInstanceKey.ToString()).SendAsync("newTask", task);
+				  await _hubContext.Clients.Group(task.variables["correlationId"].ToString()).SendAsync("newTask", task);
 
 				  await _taskListService.AddTask(task);
 

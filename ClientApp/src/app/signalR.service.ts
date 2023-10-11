@@ -75,14 +75,14 @@ export class SignalrService {
     //   console.log('new user connected');
     // });
   }
-  listenTasks(processInstanceKey: string): void {
+  listenTasks(correlationId: string): void {
     this.hubConnection = this.getConnection();
 
     this.hubConnection
       .start()
       .then(() => {
         console.log('connection started');
-        this.hubConnection.invoke('join', processInstanceKey);
+        this.hubConnection.invoke('join', correlationId);
         this.addListeners();
       })
       .catch((err) =>
