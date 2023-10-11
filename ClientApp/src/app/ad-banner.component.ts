@@ -4,6 +4,7 @@ import { AdDirective } from './ad.directive';
 import { AdItem } from './ad-item';
 import { AdComponent } from './ad.component';
 import { SignalrService } from './signalR.service';
+import { TaskService } from './task.service';
 
 @Component({
   selector: 'app-ad-banner',
@@ -11,11 +12,11 @@ import { SignalrService } from './signalR.service';
     <div class="ad-banner-example">
       <h3>Advertisements</h3>
       <ng-template adHost></ng-template>
-      <app-createAccount></app-createAccount>
+      <!-- <app-createAccount></app-createAccount>
       <app-nafathAuthentication></app-nafathAuthentication>
       <app-emailAndPassword></app-emailAndPassword>
       <app-otp></app-otp>
-      <app-wizard></app-wizard>
+      <app-wizard></app-wizard> -->
     </div>
   `,
 })
@@ -27,9 +28,12 @@ export class AdBannerComponent implements OnInit, OnDestroy {
   @ViewChild(AdDirective, { static: true }) adHost!: AdDirective;
 
   private clearTimer: VoidFunction | undefined;
-  constructor(public signalR: SignalrService) {}
+  constructor(
+    public signalR: SignalrService,
+    private taskService: TaskService
+  ) {}
   ngOnInit(): void {
-    this.loadComponent('step1');
+    this.loadComponent('creatAccount');
     this.getAds();
   }
 
@@ -55,14 +59,12 @@ export class AdBannerComponent implements OnInit, OnDestroy {
 
   getAds() {
     this.signalR.messages.asObservable().subscribe((data) => {
-      console.log(data);
       if (data && data['formKey']) {
+        this.taskService.AddTask(data);
         this.loadComponent(data['formKey']);
+
+        console.log(data);
       }
     });
-    // const interval = setInterval(() => {
-    //   this.loadComponent();
-    // }, 3000);
-    // this.clearTimer = () => clearInterval(interval);
   }
 }

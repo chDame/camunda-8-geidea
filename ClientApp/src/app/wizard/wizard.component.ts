@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TaskService } from '../task.service';
 
 @Component({
   selector: 'app-wizard',
@@ -6,7 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WizardComponent implements OnInit {
   steps: any[] = [];
-  constructor() {}
+  constructor(private taskService: TaskService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.steps = this.taskService.wizardArray;
+  }
 }

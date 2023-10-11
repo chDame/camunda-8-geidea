@@ -1,29 +1,21 @@
 import { Injectable } from '@angular/core';
-
-import { HeroJobAdComponent } from './hero-job-ad.component';
-import { HeroProfileComponent } from './hero-profile.component';
 import { AdItem } from './ad-item';
+import { NafathAuthenticationComponent } from './nafathAuthentication/nafathAuthentication.component';
+import { EmailAndPasswordComponent } from './emailAndPassword/emailAndPassword.component';
+import { OtpComponent } from './otp/otp.component';
+import { WizardComponent } from './wizard/wizard.component';
+import { CreateAccountComponent } from './createAccount/createAccount.component';
 
 @Injectable()
 export class AdService {
   getAds() {
     return {
-      nafathAuthentication: new AdItem(HeroProfileComponent, {
-        name: 'Bombasto',
-        bio: 'Brave as they come',
-      }),
-      setupStores: new AdItem(HeroProfileComponent, {
-        name: 'Dr. IQ',
-        bio: 'Smart as they come',
-      }),
-      step1: new AdItem(HeroJobAdComponent, {
-        headline: 'Hiring for several positions',
-        body: 'Submit your resume today!',
-      }),
-      registerMailAndPassword: new AdItem(HeroJobAdComponent, {
-        headline: 'Openings in all departments',
-        body: 'Apply today',
-      }),
+      creatAccount: new AdItem(CreateAccountComponent),
+      nafathAuthentication: new AdItem(NafathAuthenticationComponent),
+      setupStores: new AdItem(WizardComponent),
+      step1: new AdItem(WizardComponent),
+      checkOtp: new AdItem(OtpComponent),
+      registerMailAndPassword: new AdItem(EmailAndPasswordComponent),
     };
   }
 }
