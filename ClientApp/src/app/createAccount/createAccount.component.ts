@@ -20,6 +20,7 @@ export class CreateAccountComponent implements OnInit {
       .post('https://localhost:7009/api/process/createAccount/start', {
         phoneNumber: this.phoneNumber,
         nationalId: this.nationalId,
+        initiator: "demo"
       })
       .subscribe((data: any) => {
         this.listenAboutTasksRequest(data.correlationId.toString());
