@@ -13,6 +13,8 @@ import { NafathAuthenticationComponent } from './nafathAuthentication/nafathAuth
 import { EmailAndPasswordComponent } from './emailAndPassword/emailAndPassword.component';
 import { OtpComponent } from './otp/otp.component';
 import { WizardComponent } from './wizard/wizard.component';
+import { SelectProductsComponent } from './select-products/select-products.component';
+import { SetupStoresComponent } from './setup-stores/setup-stores.component';
 
 @NgModule({
   imports: [BrowserModule, HttpClientModule, FormsModule],
@@ -27,7 +29,9 @@ import { WizardComponent } from './wizard/wizard.component';
     NafathAuthenticationComponent,
     EmailAndPasswordComponent,
       OtpComponent,
-      WizardComponent
+      WizardComponent,
+      SelectProductsComponent,
+      SetupStoresComponent
    ],
   bootstrap: [AppComponent],
 })
