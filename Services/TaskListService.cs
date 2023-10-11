@@ -10,348 +10,77 @@ using Microsoft.Extensions.Caching.Memory;
 using static tasklistDotNetReact.Models;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using tasklistDotNetReact.Common;
 
 namespace tasklistDotNetReact.Services
 {
-  public class TaskListService
-  {
-    private readonly TaskListClientProvider _taskListClientProvider;
-    private readonly IConfiguration _configuration;
+	public class TaskListService
+	{
+		private readonly ZeebeClientProvider _provider;
+		private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public TaskListService(TaskListClientProvider taskListClientService, IMemoryCache memoryCache, IConfiguration configuration)
-    {
-      _taskListClientProvider = taskListClientService;
-      _configuration = configuration;
-    }
+		public TaskListService(ZeebeClientProvider provider, IHttpContextAccessor httpContextAccessor)
+		{
+			_provider = provider;
+			_httpContextAccessor = httpContextAccessor;
+		}
 
-    public async Task<List<Models.Task>> FetchAllTasks()
-    {
-      var graphQLClient = await _taskListClientProvider.GetTaskListClientAsync();
-      var tasksRequest = new GraphQLRequest
-      {
-        Query = @"
-                query tasks($state: TaskState!)
-                {
-                    tasks(query:{state: $state}){
-                    id
-                        name
-                        taskDefinitionId
-                        processName
-                        creationTime
-                        completionTime
-                        assignee
-                        variables {
-                            id
-                            name
-                            value
-                            previewValue
-                            isValueTruncated
-                        }
-                        sortValues
-                        isFirst
-                        formKey
-                        processDefinitionId
-                    }
-                }
-            ",
-        Variables = new { state = "CREATED" }
-      };
-      var graphQLResponse = await graphQLClient.SendQueryAsync<Models.TaskListResponse>(tasksRequest);
+		public async System.Threading.Tasks.Task AddTask(string processInstanceKey, TaskModel task)
+		{
+			ProcessInstanceTasksModel processInstanceTasks = new();
+			processInstanceTasks = _httpContextAccessor.HttpContext.Session.GetObjectFromJson<ProcessInstanceTasksModel>(processInstanceKey);
 
-      return graphQLResponse.Data.tasks;
-    }
+			if (processInstanceTasks is null)
+			{
+				processInstanceTasks = new ProcessInstanceTasksModel
+				{
+					processInstanceKey = processInstanceKey,
+					tasks = new List<TaskModel> { task }
+				};
+			}
+			else
+			{
+				processInstanceTasks.tasks.Add(task);
+			}
 
-    public async Task<Models.Task> GetTask(string taskId)
-    {
-      var graphQLClient = await _taskListClientProvider.GetTaskListClientAsync();
+			_httpContextAccessor.HttpContext.Session.SetObjectAsJson(processInstanceKey, task);
+		}
 
-      var tasksRequest = new GraphQLRequest
-      {
-        Query = @"
-                 query task ($id: String!) {
-                    task (id: $id) {
-                        id
-                        name
-                        taskDefinitionId
-                        processName
-                        creationTime
-                        completionTime
-                        assignee
-                        variables {
-                            id
-                            name
-                            value
-                            previewValue
-                            isValueTruncated
-                        }
-                        sortValues
-                        isFirst
-                        formKey
-                        processDefinitionId
-                        candidateGroups
-                    }
-                }
-                ",
-        OperationName = "task",
-        Variables = new { id = taskId }
-      };
+		public async Task<TaskModel> GetTask(string jobKey, string processInstanceKey)
+		{
+			throw new NotImplementedException();
+		}
 
-      var graphQLResponse = await graphQLClient.SendQueryAsync<Models.GetTaskResponse>(tasksRequest);
+		public async Task<List<TaskModel>> GetTaskByProcessInstanceKey(string processInstanceKey)
+		{
+			var processInstanceTasks = _httpContextAccessor.HttpContext.Session.GetObjectFromJson<ProcessInstanceTasksModel>(processInstanceKey);
+			return processInstanceTasks.tasks;
+		}
 
-      return graphQLResponse.Data.task;
+		public async System.Threading.Tasks.Task CompleteTask(string jobKey, Dictionary<string, object> variables)
+		{
+			await _provider.GetZeebeClient().
+				NewCompleteJobCommand(Convert.ToInt64(jobKey)).
+				Variables(JsonConvert.SerializeObject(variables)).
+				Send();
+		}
 
-    }
+	}
 
-    public async Task<List<Models.Task>> GetTaskByProcessInstanceId(string processInstanceId)
-    {
-      var graphQLClient = await _taskListClientProvider.GetTaskListClientAsync();
+	public class ProcessInstanceTasksModel
+	{
+		public string processInstanceKey { get; set; }
+		public List<TaskModel> tasks { get; set; }
+	}
 
-      var tasksRequest = new GraphQLRequest
-      {
-        Query = @"
-                 query getTasksByProcessInstanceId ($processInstanceId: String!) {
-                    tasks (query:{processInstanceId: $processInstanceId}) {
-                        id
-                        name
-                        taskDefinitionId
-                        processName
-                        creationTime
-                        completionTime
-                        assignee
-                        variables {
-                            id
-                            name
-                            value
-                            previewValue
-                            isValueTruncated
-                        }
-                        sortValues
-                        isFirst
-                        formKey
-                        processDefinitionId
-                        candidateGroups
-                    }
-                }
-                ",
-        OperationName = "getTasksByProcessInstanceId",
-        Variables = new { processInstanceId = processInstanceId }
-      };
-
-      var graphQLResponse = await graphQLClient.SendQueryAsync<Models.TaskListResponse>(tasksRequest);
-
-      return graphQLResponse.Data.tasks;
-
-    }
-
-    public async Task<List<Models.Task>> GetTasksByUser(string user)
-    {
-      var graphQLClient = await _taskListClientProvider.GetTaskListClientAsync();
-
-      var tasksRequest = new GraphQLRequest
-      {
-        Query = @"
-
-                 query getTasksByAssignee($assignee: String!, $state: TaskState!){
-                    tasks(query:{assignee: $assignee, state: $state }){
-
-                    id,
-                    formKey 
-                    processDefinitionId 
-                    assignee 
-                    name  
-                    candidateGroups 
-                    processName 
-                    creationTime 
-                    completionTime 
-                    }
-                }
-                ",
-        OperationName = "getTasksByAssignee",
-
-        Variables = new { assignee = user, state = "CREATED" }
-
-      };
-
-      var graphQLResponse = await graphQLClient.SendQueryAsync<Models.TaskListResponse>(tasksRequest);
-
-      return graphQLResponse.Data.tasks;
-    }
-
-    public async Task<List<Models.Task>> GetCompletedTasks(string user)
-    {
-      var graphQLClient = await _taskListClientProvider.GetTaskListClientAsync();
-
-      var tasksRequest = new GraphQLRequest
-      {
-        Query = @"
-                 query getTasksByAssignee($state: TaskState!){
-                    tasks(query:{state: $state}){
-                    id,
-                    formKey 
-                    processDefinitionId 
-                    assignee 
-                    name  
-                    candidateGroups 
-                    processName 
-                    creationTime 
-                    completionTime 
-                    }
-                }
-                ",
-        OperationName = "getTasksByAssignee",
-        Variables = new { state = "COMPLETED" }
-
-
-      };
-
-      var graphQLResponse = await graphQLClient.SendQueryAsync<Models.TaskListResponse>(tasksRequest);
-
-      return graphQLResponse.Data.tasks;
-    }
-
-
-    public async Task<Models.Task> ClaimTask(string taskId, string user)
-    {
-      var graphQLClient = await _taskListClientProvider.GetTaskListClientAsync();
-
-      var mutationRequest = new GraphQLRequest
-      {
-        Query = @"
-                mutation claimTask ($taskId: String!, $assignee: String)  {
-                claimTask (taskId: $taskId, assignee: $assignee)
-                {
-                        id
-                        name
-                        taskDefinitionId
-                        processName
-                        creationTime
-                        completionTime
-                        assignee
-                        variables {
-                            id
-                            name
-                            value
-                            previewValue
-                            isValueTruncated
-                        }
-                        taskState
-                        sortValues
-                        isFirst
-                        formKey
-                        processDefinitionId
-                        candidateGroups
-                    }
-                }
-                ",
-        OperationName = "claimTask",
-        Variables = new
-        {
-          taskId = taskId,
-          assignee = user
-        }
-      };
-
-      var mutationResponse = await graphQLClient.SendMutationAsync<Models.ClaimMutationResponse>(mutationRequest);
-
-      return mutationResponse.Data.claimTask;
-    }
-
-
-    public async Task<Models.Task> UnClaimTask(string taskId)
-    {
-      var graphQLClient = await _taskListClientProvider.GetTaskListClientAsync();
-
-      var mutationRequest = new GraphQLRequest
-      {
-        Query = @"
-                mutation unclaimTask ($taskId: String!)  {
-                unclaimTask (taskId: $taskId)
-                {
-                        id
-                        name
-                        taskDefinitionId
-                        processName
-                        creationTime
-                        completionTime
-                        assignee
-                        variables {
-                            id
-                            name
-                            value
-                            previewValue
-                            isValueTruncated
-                        }
-                        taskState
-                        sortValues
-                        isFirst
-                        formKey
-                        processDefinitionId
-                        candidateGroups
-                    }
-                }
-                ",
-        OperationName = "unclaimTask",
-        Variables = new
-        {
-          taskId = taskId
-        }
-      };
-
-      var mutationResponse = await graphQLClient.SendMutationAsync<Models.UnClaimMutationResponse>(mutationRequest);
-
-      return mutationResponse.Data.unClaimTask;
-    }
-
-    public async Task<Models.Task> CompleteTask(string taskId, Dictionary<string, object> variables)
-    {
-      var graphQLClient = await _taskListClientProvider.GetTaskListClientAsync();
-
-      var varInputs = new List<VariableInput>();
-      foreach (KeyValuePair<string, object> value in variables)
-      {
-        varInputs.Add(new VariableInput { name = value.Key, value = System.Text.Json.JsonSerializer.Serialize(value.Value) });
-      }
-
-      var mutationRequest = new GraphQLRequest
-      {
-        Query = @"
-                mutation completeTask ($taskId: String!, $variables: [VariableInput!]!) {
-                completeTask (taskId: $taskId, variables: $variables) {
-                        id
-                        name
-                        taskDefinitionId
-                        processName
-                        creationTime
-                        completionTime
-                        assignee
-                        variables {
-                            id
-                            name
-                            value
-                            previewValue
-                            isValueTruncated
-                        }
-                        sortValues
-                        isFirst
-                        formKey
-                        processDefinitionId
-                        candidateGroups
-                    }
-                }   
-                ",
-        OperationName = "completeTask",
-        Variables = new
-        {
-          taskId = taskId,
-          variables = varInputs
-        }
-      };
-
-      var mutationResponse = await graphQLClient.SendMutationAsync<Models.CompleteMutationResponse>(mutationRequest);
-
-      return mutationResponse.Data.completeTask;
-    }
-
-  }
+	public class TaskModel
+	{
+		public string jobKey { get; set; }
+		public string formKey { get; set; }
+		public string assignee { get; set; }
+		public Dictionary<string, object> variables { get; set; }
+	}
 }
 

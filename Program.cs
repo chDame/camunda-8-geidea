@@ -8,6 +8,13 @@ using Zeebe.Client.Impl.Builder;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSignalR();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+	options.Cookie.Name = ".Camunda.Session";
+	//options.IdleTimeout = TimeSpan.FromSeconds(10);
+	options.Cookie.IsEssential = true;
+});
 
 builder.Services.AddCors(options =>
 {
@@ -62,6 +69,7 @@ builder.Services.BootstrapZeebe(builder.Configuration.GetSection("ZeebeConfigura
 
 }, typeof(Program).Assembly);
 
+builder.Services.AddMvc();
 
 
 var app = builder.Build();
@@ -76,6 +84,9 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
+app.UseSession();
+
 app.UseCors("_myAllowSpecificOrigins");
 
 app.MapControllerRoute(

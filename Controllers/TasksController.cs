@@ -3,58 +3,35 @@ using tasklistDotNetReact.Services;
 
 namespace tasklistDotNetReact.Controllers
 {
-  [Route("api/[controller]")]
-  [ApiController]
-  public class TasksController : ControllerBase
-  {
+	[Route("api/[controller]")]
+	[ApiController]
+	public class TasksController : ControllerBase
+	{
 
-    private readonly ILogger<TasksController> _logger;
-    private readonly TaskListService _taskListService;
+		private readonly ILogger<TasksController> _logger;
+		private readonly TaskListService _taskListService;
 
-    public TasksController(ILogger<TasksController> logger, TaskListService taskListService)
-    {
-      _logger = logger;
-      _taskListService = taskListService;
-    }
+		public TasksController(ILogger<TasksController> logger, TaskListService taskListService)
+		{
+			_logger = logger;
+			_taskListService = taskListService;
+		}
 
+		[HttpGet("{processInstanceKey}")]
+		public async Task<JsonResult> GetPInstanceTasks(string processInstanceKey)
+		{
+			List<TaskModel> tasks = await _taskListService.GetTaskByProcessInstanceKey(processInstanceKey);
 
-    [HttpGet]
-    public async Task<JsonResult> GetAllTasks()
-    {
-      var alltasks = await _taskListService.FetchAllTasks();
+			return new JsonResult(tasks);
+		}
 
-      return new JsonResult(alltasks);
-    }
-    [HttpPost("search")]
-    public async Task<JsonResult> Search()
-    {
-      var alltasks = await _taskListService.FetchAllTasks();
+		[HttpPost("{jobKey}")]
+		public async Task<IActionResult> complete(string jobKey, [FromBody] Dictionary<string, object> variables)
+		{
+			await _taskListService.CompleteTask(jobKey, variables);
 
-      return new JsonResult(alltasks);
-    }
+			return Ok();
+		}
 
-    [HttpGet("{taskId}/claim")]
-    public async Task<JsonResult> Claim(string taskId)
-    {
-      Models.Task task = await _taskListService.ClaimTask(taskId, "demo");
-
-      return new JsonResult(task);
-    }
-    [HttpGet("{taskId}/unclaim")]
-    public async Task<JsonResult> Unclaim(string taskId)
-    {
-      Models.Task task = await _taskListService.UnClaimTask(taskId);
-
-      return new JsonResult(task);
-    }
-
-    [HttpPost("{taskId}")]
-    public async Task<JsonResult> complete(string taskId, [FromBody] Dictionary<string, object> variables)
-    {
-      Models.Task task = await _taskListService.CompleteTask(taskId, variables);
-
-      return new JsonResult(task);
-    }
-
-  }
+	}
 }
