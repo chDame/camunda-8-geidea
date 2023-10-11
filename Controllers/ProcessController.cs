@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Net;
 using tasklistDotNetReact.Services;
 
 namespace tasklistDotNetReact.Controllers
@@ -56,14 +57,20 @@ namespace tasklistDotNetReact.Controllers
 		{
 			//			//Get IP address
 			//#pragma warning disable 8602
-			//			var userIP = Request.HttpContext.Connection.RemoteIpAddress.ToString();
-			//#pragma warning restore 8602
+			var userIP = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
-			// Retreive server / local IP address
-			var feature = HttpContext.Features.Get<IHttpConnectionFeature>();
-			var userIP = feature?.LocalIpAddress?.ToString();
+	  //#pragma warning restore 8602
 
-			var correlationId = Guid.NewGuid().ToString();
+	  // Retreive server / local IP address
+	  //var feature = HttpContext.Features.Get<IHttpConnectionFeature>();
+	  //var userIP = feature?.LocalIpAddress?.ToString();
+      if (userIP=="::1")
+      {
+		userIP = GetIPAddress();
+	  }
+	  Console.WriteLine(userIP);
+
+	  var correlationId = Guid.NewGuid().ToString();
 			variables.Add("correlationId", correlationId);
 			variables.Add("merchantIP", userIP);
 			var processInstance = await _zeebeClientProvider.GetZeebeClient()
@@ -81,5 +88,22 @@ namespace tasklistDotNetReact.Controllers
 		{
 			return new JsonResult(await operateService.ProcessDefinitions());
 		}
+
+	private static string GetIPAddress()
+	{
+	  String address = "";
+	  WebRequest request = WebRequest.Create("http://checkip.dyndns.org/");
+	  using (WebResponse response = request.GetResponse())
+	  using (StreamReader stream = new StreamReader(response.GetResponseStream()))
+	  {
+		address = stream.ReadToEnd();
+	  }
+
+	  int first = address.IndexOf("Address: ") + 9;
+	  int last = address.LastIndexOf("</body>");
+	  address = address.Substring(first, last - first);
+
+	  return address;
 	}
+  }
 }
