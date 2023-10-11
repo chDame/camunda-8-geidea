@@ -39,9 +39,9 @@ namespace tasklistDotNetReact.Services
 					  assignee = headers.ContainsKey("io.camunda.zeebe:assignee") ? headers["io.camunda.zeebe:assignee"].ToString() : "",
 					  formKey = headers["io.camunda.zeebe:formKey"].ToString(),
 					  jobKey = job.Key.ToString(),
-					  variables = JsonConvert.DeserializeObject<Dictionary<string, object>>(job.Variables)
+					  variablesStr = job.Variables
 				  };
-
+				  
 				  await _hubContext.Clients.Group(task.variables["correlationId"].ToString()).SendAsync("newTask", task);
 
 				  await _taskListService.AddTask(task);
