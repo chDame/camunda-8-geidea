@@ -8,18 +8,19 @@ import { AdDirective } from './ad.directive';
 import { AdService } from './ad.service';
 import { HttpClientModule } from '@angular/common/http';
 import { CreateAccountComponent } from './createAccount/createAccount.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
-  imports: [BrowserModule, HttpClientModule],
+  imports: [BrowserModule, HttpClientModule, FormsModule],
   providers: [AdService],
-  declarations: [	
+  declarations: [
     AppComponent,
     AdBannerComponent,
     HeroJobAdComponent,
     HeroProfileComponent,
     AdDirective,
-      CreateAccountComponent
-   ],
+    CreateAccountComponent,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

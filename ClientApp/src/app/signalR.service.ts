@@ -5,7 +5,7 @@ import {
   HubConnectionBuilder,
   LogLevel,
 } from '@microsoft/signalr';
-import { BehaviorSubject, from } from 'rxjs';
+import { BehaviorSubject, Observable, from } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { chatMesage } from './chatMesage';
 @Injectable({
@@ -18,11 +18,6 @@ export class SignalrService {
   // private apiUrl = 'https://localhost:44319/api/chat';
 
   constructor(private http: HttpClient) {}
-
-  public connect = () => {
-    this.startConnection();
-    this.addListeners();
-  };
 
   // public sendMessageToApi(message: string) {
   //   return this.http
@@ -63,20 +58,6 @@ export class SignalrService {
     };
   }
 
-  private startConnection() {
-    this.hubConnection = this.getConnection();
-
-    this.hubConnection
-      .start()
-      .then(() => {
-        console.log('connection started');
-        this.hubConnection.invoke('join', 'demo');
-      })
-      .catch((err) =>
-        console.log('error while establishing signalr connection: ' + err)
-      );
-  }
-
   private addListeners() {
     // this.hubConnection.on('messageReceivedFromApi', (data: chatMesage) => {
     //   console.log('message received from API Controller');
@@ -93,5 +74,19 @@ export class SignalrService {
     // this.hubConnection.on('newUserConnected', (_) => {
     //   console.log('new user connected');
     // });
+  }
+  listenTasks(processInstanceKey: string): void {
+    this.hubConnection = this.getConnection();
+
+    this.hubConnection
+      .start()
+      .then(() => {
+        console.log('connection started');
+        this.hubConnection.invoke('join', processInstanceKey);
+        this.addListeners();
+      })
+      .catch((err) =>
+        console.log('error while establishing signalr connection: ' + err)
+      );
   }
 }
