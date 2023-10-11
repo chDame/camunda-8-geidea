@@ -16,10 +16,10 @@ namespace tasklistDotNetReact.DataAccess.Entities
 	public string variablesStr { get; set; }
 
 	[NotMapped]
-	public Dictionary<string, object> variables
+	public JsonNode variables
 	{
-	  get => JsonConvert.DeserializeObject<Dictionary<string, object>>(variablesStr);
-	  set => variablesStr = JsonConvert.SerializeObject(value);
+	  get => System.Text.Json.JsonSerializer.Deserialize<JsonNode>(variablesStr);
+	  set => variablesStr = System.Text.Json.JsonSerializer.Serialize(value);
 	}
 
   }

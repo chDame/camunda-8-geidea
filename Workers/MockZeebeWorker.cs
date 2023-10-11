@@ -33,20 +33,6 @@ namespace tasklistDotNetReact.Services
 		}
 	}
 
-
-	[JobType("sendOTP")]
-	public class SendOTPWorker : IAsyncZeebeWorkerWithResult<JsonNode>
-	{
-		public SendOTPWorker()
-		{
-		}
-		public async Task<JsonNode> HandleJob(ZeebeJob job, CancellationToken cancellationToken)
-		{
-			return null;
-		}
-	}
-
-
 	[JobType("createMmsTaskForSale")]
 	public class CreateMmsTaskForSaleWorker : IAsyncZeebeWorkerWithResult<JsonNode>
 	{
