@@ -4,70 +4,76 @@ using tasklistDotNetReact.Services;
 
 namespace tasklistDotNetReact.Controllers
 {
-  [Route("api/[controller]")]
-  [ApiController]
-  public class ProcessController : ControllerBase
-  {
+	[Route("api/[controller]")]
+	[ApiController]
+	public class ProcessController : ControllerBase
+	{
 
-    private readonly ILogger<ProcessController> _logger;
-    private readonly ZeebeClientProvider _zeebeClientProvider;
-    private readonly OperateService operateService;
-    private readonly IConfiguration _configuration;
+		private readonly ILogger<ProcessController> _logger;
+		private readonly ZeebeClientProvider _zeebeClientProvider;
+		private readonly OperateService operateService;
+		private readonly IConfiguration _configuration;
 
-    public ProcessController(ILogger<ProcessController> logger, Services.ZeebeClientProvider zeebeClientProvider, OperateService operateService, IConfiguration configuration)
-    {
-      _logger = logger;
-      _zeebeClientProvider = zeebeClientProvider;
-      this.operateService = operateService;
-      _configuration = configuration;
-    }
+		public ProcessController(ILogger<ProcessController> logger, Services.ZeebeClientProvider zeebeClientProvider, OperateService operateService, IConfiguration configuration)
+		{
+			_logger = logger;
+			_zeebeClientProvider = zeebeClientProvider;
+			this.operateService = operateService;
+			_configuration = configuration;
+		}
 
 
-    [HttpGet]
-    public async Task<JsonResult> topology()
-    {
-      // Get cluster topology
-      var topology = await _zeebeClientProvider.GetZeebeClient().TopologyRequest().Send();
+		[HttpGet]
+		public async Task<JsonResult> topology()
+		{
+			// Get cluster topology
+			var topology = await _zeebeClientProvider.GetZeebeClient().TopologyRequest().Send();
 
-      Console.WriteLine("Cluster connected: " + topology);
+			Console.WriteLine("Cluster connected: " + topology);
 
-      return new JsonResult(new { topology = topology });
-    }
+			return new JsonResult(new { topology = topology });
+		}
 
-    [HttpPost]
-    public async Task<JsonResult> DeployProcess([FromQuery] string processName)
-    {
-      var processPath = _configuration.GetValue<string>("resourcePath");
-      var demoProcessPath = $"{processPath}/{processName}.bpmn";
+		[HttpPost]
+		public async Task<JsonResult> DeployProcess([FromQuery] string processName)
+		{
+			var processPath = _configuration.GetValue<string>("resourcePath");
+			var demoProcessPath = $"{processPath}/{processName}.bpmn";
 
-      var deployResponse = await _zeebeClientProvider.GetZeebeClient().NewDeployCommand()
-          .AddResourceFile(demoProcessPath)
-          .Send();
+			var deployResponse = await _zeebeClientProvider.GetZeebeClient().NewDeployCommand()
+				.AddResourceFile(demoProcessPath)
+				.Send();
 
-      var processDefinitionKey = deployResponse.Processes[0].ProcessDefinitionKey;
+			var processDefinitionKey = deployResponse.Processes[0].ProcessDefinitionKey;
 
-      return new JsonResult(new { processDefinitionKey = processDefinitionKey });
-    }
+			return new JsonResult(new { processDefinitionKey = processDefinitionKey });
+		}
 
-    [HttpPost("{bpmnProcessId}/start")]
-    public async Task<JsonResult> CreateProcessInstance(string bpmnProcessId, [FromBody] Dictionary<string, object> variables)
-    {
-      var correlationId = Guid.NewGuid().ToString();
-      variables.Add("correlationId", correlationId);
-      var processInstance = await _zeebeClientProvider.GetZeebeClient()
-          .NewCreateProcessInstanceCommand()
-          .BpmnProcessId(bpmnProcessId)
-          .LatestVersion()
-          .Variables(System.Text.Json.JsonSerializer.Serialize(variables))
-          .Send();
+		[HttpPost("{bpmnProcessId}/start")]
+		public async Task<JsonResult> CreateProcessInstance(string bpmnProcessId, [FromBody] Dictionary<string, object> variables)
+		{
+			//Get IP address
+#pragma warning disable 8602
+			var userIP = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+#pragma warning restore 8602
 
-      return new JsonResult(new { ProcessInstanceKey = processInstance.ProcessInstanceKey, correlationId = correlationId });
-    }
+			var correlationId = Guid.NewGuid().ToString();
+			variables.Add("correlationId", correlationId);
+			variables.Add("merchantIP", userIP);
+			var processInstance = await _zeebeClientProvider.GetZeebeClient()
+				.NewCreateProcessInstanceCommand()
+				.BpmnProcessId(bpmnProcessId)
+				.LatestVersion()
+				.Variables(System.Text.Json.JsonSerializer.Serialize(variables))
+				.Send();
 
-    [HttpGet("definition/latest")]
-    public async Task<JsonResult> latestDefinitions()
-    {
-      return new JsonResult(await operateService.ProcessDefinitions());
-    }
-  }
+			return new JsonResult(new { ProcessInstanceKey = processInstance.ProcessInstanceKey, correlationId = correlationId });
+		}
+
+		[HttpGet("definition/latest")]
+		public async Task<JsonResult> latestDefinitions()
+		{
+			return new JsonResult(await operateService.ProcessDefinitions());
+		}
+	}
 }
