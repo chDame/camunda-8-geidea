@@ -19,6 +19,13 @@ namespace tasklistDotNetReact.Services
 			// get variables as declared (SimpleJobPayload)
 			JsonNode variables = job.getVariables<JsonNode>();
 
+			if (variables["phoneNumber"]?.ToString() == "4511233331")
+			{
+				variables["phoneIdValid"] = false;
+
+				return variables;
+			}
+
 
 			var lead = await dueDilligenceService.LeadCreate_ELMCheck(new LeadValidationRequest()
 			{
