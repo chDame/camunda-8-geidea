@@ -9,18 +9,26 @@ import { AdService } from './ad.service';
 import { HttpClientModule } from '@angular/common/http';
 import { CreateAccountComponent } from './createAccount/createAccount.component';
 import { FormsModule } from '@angular/forms';
+import { NafathAuthenticationComponent } from './nafathAuthentication/nafathAuthentication.component';
+import { EmailAndPasswordComponent } from './emailAndPassword/emailAndPassword.component';
+import { OtpComponent } from './otp/otp.component';
+import { WizardComponent } from './wizard/wizard.component';
 
 @NgModule({
   imports: [BrowserModule, HttpClientModule, FormsModule],
   providers: [AdService],
-  declarations: [
+  declarations: [		
     AppComponent,
     AdBannerComponent,
     HeroJobAdComponent,
     HeroProfileComponent,
     AdDirective,
     CreateAccountComponent,
-  ],
+    NafathAuthenticationComponent,
+    EmailAndPasswordComponent,
+      OtpComponent,
+      WizardComponent
+   ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

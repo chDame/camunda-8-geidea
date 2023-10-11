@@ -80,3 +80,12 @@ input[type="text"] {
   width: 100%;
   padding: .5rem;
 }
+input[type="email"] {
+  box-sizing: border-box;
+  width: 100%;
+  padding: .5rem;
+}input[type="password"] {
+  box-sizing: border-box;
+  width: 100%;
+  padding: .5rem;
+}

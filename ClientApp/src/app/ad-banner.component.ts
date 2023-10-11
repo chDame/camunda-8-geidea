@@ -12,6 +12,10 @@ import { SignalrService } from './signalR.service';
       <h3>Advertisements</h3>
       <ng-template adHost></ng-template>
       <app-createAccount></app-createAccount>
+      <app-nafathAuthentication></app-nafathAuthentication>
+      <app-emailAndPassword></app-emailAndPassword>
+      <app-otp></app-otp>
+      <app-wizard></app-wizard>
     </div>
   `,
 })
