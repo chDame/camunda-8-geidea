@@ -8,7 +8,7 @@ export class TaskService {
   currentTask: any;
   listOfTasks: any[] = [];
   wizardArray: string[] = [];
-  stepTaskMap: any;
+  stepTaskMap: any = {};
 
   constructor(private httpClient: HttpClient) {}
 
@@ -29,10 +29,10 @@ export class TaskService {
     this.httpClient
       .post(`https://localhost:7009/api/tasks/${this.currentTask.jobKey}`, body)
       .subscribe((data: any) => {
-        this.currentTask(null);
         this.listOfTasks = this.listOfTasks.filter(
           (t) => t.jobKey != this.currentTask.jobKey
         );
+        this.currentTask = null;
       });
   }
 }

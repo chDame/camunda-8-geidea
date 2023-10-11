@@ -66,7 +66,7 @@ namespace tasklistDotNetReact.Controllers
 	  //var userIP = feature?.LocalIpAddress?.ToString();
       if (userIP=="::1")
       {
-		userIP = GetIPAddress();
+		userIP = "196.204.28.66";//GetIPAddress();
 	  }
 	  Console.WriteLine(userIP);
 
