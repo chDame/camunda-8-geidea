@@ -1,3 +1,29 @@
-<p>
-  createAccount works!
-</p>
+<div
+  style="
+    padding: 20px;
+    width: 400px;
+    background-color: azure;
+    border-radius: 20px;
+  "
+>
+  <form>
+    <label>Phone Number</label>
+
+    <input
+      type="text"
+      name="phoneNumber"
+      placeholder="enter your phoneNumber"
+      maxlength="9"
+      [(ngModel)]="phoneNumber"
+    />
+    <label>National Id</label>
+    <input
+      type="text"
+      name="nationalID"
+      placeholder="enter your national Id"
+      maxlength="10"
+      [(ngModel)]="nationalId"
+    />
+    <button (click)="submitForm()">submit</button>
+  </form>
+</div>

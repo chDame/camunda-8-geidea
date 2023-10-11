@@ -11,6 +11,7 @@ import { SignalrService } from './signalR.service';
     <div class="ad-banner-example">
       <h3>Advertisements</h3>
       <ng-template adHost></ng-template>
+      <app-createAccount></app-createAccount>
     </div>
   `,
 })
@@ -51,8 +52,8 @@ export class AdBannerComponent implements OnInit, OnDestroy {
   getAds() {
     this.signalR.messages.asObservable().subscribe((data) => {
       console.log(data);
-      if (data && data['formkey']) {
-        this.loadComponent(data['formkey']);
+      if (data && data['formKey']) {
+        this.loadComponent(data['formKey']);
       }
     });
     // const interval = setInterval(() => {

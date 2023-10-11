@@ -21,8 +21,6 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.signalRService.connect();
-
     this.ads = this.adService.getAds();
   }
 }
