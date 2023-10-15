@@ -16,6 +16,7 @@ using tasklistDotNetReact.Common;
 using tasklistDotNetReact.DataAccess.Entities;
 using tasklistDotNetReact.DataAccess;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Nodes;
 
 namespace tasklistDotNetReact.Services
 {
@@ -46,11 +47,11 @@ namespace tasklistDotNetReact.Services
 			return _dBContext.TaskModels.Where(t => t.processInstanceKey == processInstanceKey).ToList();
 		}
 
-		public async System.Threading.Tasks.Task CompleteTask(string jobKey, Dictionary<string, object> variables)
+		public async System.Threading.Tasks.Task CompleteTask(string jobKey, JsonNode variables)
 		{
 			await _provider.GetZeebeClient().
 				NewCompleteJobCommand(Convert.ToInt64(jobKey)).
-				Variables(JsonConvert.SerializeObject(variables)).
+				Variables(System.Text.Json.JsonSerializer.Serialize(variables)).
 				Send();
 		}
 

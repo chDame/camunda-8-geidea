@@ -8,7 +8,8 @@ export class TaskService {
   currentTask: any;
   listOfTasks: any[] = [];
   wizardArray: string[] = [];
-  stepTaskMap: any;
+  stepTaskMap: any = {};
+  currentStep: string = "";
 
   constructor(private httpClient: HttpClient) {}
 
@@ -25,14 +26,23 @@ export class TaskService {
   setCurrentTask(task: any): void {
     this.currentTask = task;
   }
+  getCurrentTask(): any {
+    return this.currentTask;
+  }
   completeTask(body: any): void {
     this.httpClient
       .post(`https://localhost:7009/api/tasks/${this.currentTask.jobKey}`, body)
       .subscribe((data: any) => {
-        this.currentTask = null;
         this.listOfTasks = this.listOfTasks.filter(
           (t) => t.jobKey != this.currentTask.jobKey
         );
+        this.currentStep = "";
+        this.currentTask = null;
       });
+  }
+
+  selectWizardStep(step: string): void {
+    this.currentStep = step;
+    this.currentTask = this.stepTaskMap[step];
   }
 }

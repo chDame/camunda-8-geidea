@@ -1,5 +1,6 @@
 <div style="width: 200px; height: 100px; background-color: beige">
   <p *ngFor="let step of steps">
-    {{ step }}
+    <span (click)="selectWizardStep(step)">{{ step }}</span>
   </p>
+  <ng-template adHost></ng-template>
 </div>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Nodes;
 using tasklistDotNetReact.DataAccess.Entities;
 using tasklistDotNetReact.Services;
 
@@ -27,7 +28,7 @@ namespace tasklistDotNetReact.Controllers
 		}
 
 		[HttpPost("{jobKey}")]
-		public async Task<IActionResult> complete(string jobKey, [FromBody] Dictionary<string, object> variables)
+		public async Task<IActionResult> complete(string jobKey, [FromBody] JsonNode variables)
 		{
 			await _taskListService.CompleteTask(jobKey, variables);
 

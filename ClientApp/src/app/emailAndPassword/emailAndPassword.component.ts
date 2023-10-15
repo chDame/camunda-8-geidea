@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TaskService } from '../task.service';
 
 @Component({
   selector: 'app-emailAndPassword',
@@ -7,8 +8,15 @@ import { Component, OnInit } from '@angular/core';
 export class EmailAndPasswordComponent implements OnInit {
   email: string = '';
   password: string = '';
-  constructor() {}
+  constructor(
+    private taskService: TaskService) {}
 
   ngOnInit() {}
-  submitForm() {}
+  submitForm() {
+
+    this.taskService.completeTask({
+      usermail: this.email,
+      userpassword: this.password
+    });
+}
 }

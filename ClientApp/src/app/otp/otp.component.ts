@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TaskService } from '../task.service';
 
 @Component({
   selector: 'app-otp',
@@ -6,7 +7,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OtpComponent implements OnInit {
   otp: string = '';
-  constructor() {}
+  constructor(
+    private taskService: TaskService) {}
 
-  ngOnInit() {}
+  ngOnInit() { }
+  submitForm() {
+    this.taskService.completeTask({
+      userOtp: this.otp
+    });
+  }
 }
