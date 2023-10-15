@@ -19,13 +19,14 @@ namespace tasklistDotNetReact.Controllers
 			_taskListService = taskListService;
 		}
 
-		[HttpGet("{processInstanceKey}")]
-		public async Task<JsonResult> GetPInstanceTasks(string processInstanceKey)
+		[HttpGet("{corrId}")]
+		public async Task<JsonResult> GetCorrIdTasks(string corrId)
 		{
-			List<TaskModel> tasks = await _taskListService.GetTaskByProcessInstanceKey(processInstanceKey);
+			List<TaskModel> tasks = await _taskListService.GetTaskByCorrelationId(corrId);
 
 			return new JsonResult(tasks);
 		}
+
 
 		[HttpPost("{jobKey}")]
 		public async Task<IActionResult> complete(string jobKey, [FromBody] JsonNode variables)

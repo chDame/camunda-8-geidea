@@ -33,18 +33,18 @@ namespace tasklistDotNetReact.Services
 
 		public async System.Threading.Tasks.Task AddTask(TaskModel task)
 		{
-			_dBContext.TaskModels.Add(task);
+			_dBContext.TaskModels.AddAsync(task);
 			await _dBContext.SaveChangesAsync();
 		}
 
 		public async Task<TaskModel?> GetTask(string jobKey, string processInstanceKey)
 		{
-			return _dBContext.TaskModels.FirstOrDefault(t => t.processInstanceKey == processInstanceKey && t.jobKey == jobKey);
+			return await _dBContext.TaskModels.FirstOrDefaultAsync(t => t.processInstanceKey == processInstanceKey && t.jobKey == jobKey);
 		}
 
-		public async Task<List<TaskModel>> GetTaskByProcessInstanceKey(string processInstanceKey)
+		public async Task<List<TaskModel>> GetTaskByCorrelationId(string corrId)
 		{
-			return _dBContext.TaskModels.Where(t => t.processInstanceKey == processInstanceKey).ToList();
+			return await _dBContext.TaskModels.Where(t => t.correlationId == corrId).ToListAsync();
 		}
 
 		public async System.Threading.Tasks.Task CompleteTask(string jobKey, JsonNode variables)
