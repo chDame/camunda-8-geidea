@@ -1,6 +1,13 @@
 /* Global Styles */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 * {
   font-family: Arial, Helvetica, sans-serif;
+}
+html{
+  height: 100vh;
 }
 h1 {
   color: #264D73;
@@ -14,9 +21,10 @@ h3 {
   font-size: 1.3rem;
 }
 body {
+  height: 100vh;
   padding: .5rem;
-  max-width: 1000px;
-  margin: auto;
+  width: 100vw;
+  background-color: #F0F3FF;
 }
 @media (min-width: 600px) {
   body {

@@ -9,8 +9,7 @@ import { TaskService } from './task.service';
 @Component({
   selector: 'app-ad-banner',
   template: `
-    <div class="ad-banner-example">
-      <h3>Advertisements</h3>
+    <div class="get-started-page">
       <ng-template adHost></ng-template>
       <!-- <app-createAccount></app-createAccount>
       <app-nafathAuthentication></app-nafathAuthentication>

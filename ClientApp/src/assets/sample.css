@@ -18,7 +18,9 @@
   color: black;
 }
 
-.ad-banner-example {
-  width:700px;
-  height: 80vh;
+.get-started-page {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }

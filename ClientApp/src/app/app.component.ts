@@ -7,10 +7,21 @@ import { SignalrService } from './signalR.service';
 @Component({
   selector: 'app-root',
   template: `
-    <div>
+    <div style="height: 100%;width:100%">
       <app-ad-banner [ads]="ads"></app-ad-banner>
     </div>
   `,
+
+  styles: [
+    `
+      :host {
+        width: 100%;
+        display: block;
+        height: 100%;
+        background-color: white;
+      }
+    `,
+  ],
 })
 export class AppComponent implements OnInit {
   ads: any;

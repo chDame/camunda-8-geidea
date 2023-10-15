@@ -1,29 +1,49 @@
-<div
-  style="
-    padding: 20px;
-    width: 400px;
-    background-color: azure;
-    border-radius: 20px;
-  "
->
-  <form>
-    <label>Phone Number</label>
+<div class="grid grid-cols-2">
+  <div class="m-auto w-2/4 flex flex-col w justify-center mt-10 m-auto">
+    <div class="mb-7 mt-20">
+      <h1 class="text-[32px] color-[#0E0E14] font-bold">
+        Let’s get you started
+      </h1>
+      <p class="text-base text-gray-600 py-2 !text-[15px]">
+        We are legally required to verify your identity before shipping products
+        and accepting payments. <br />
+      </p>
+    </div>
+    <form data-testid="form" (ngSubmit)="submitForm()">
+      <div class="mb-3">
+        <input
+          type="text"
+          id="National-input"
+          [(ngModel)]="nationalId"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:!border-[#3f83f8] w-full p-2.5"
+          [placeholder]="'national Id'"
+        />
+      </div>
 
-    <input
-      type="text"
-      name="phoneNumber"
-      placeholder="enter your phoneNumber"
-      maxlength="9"
-      [(ngModel)]="phoneNumber"
-    />
-    <label>National Id</label>
-    <input
-      type="text"
-      name="nationalID"
-      placeholder="enter your national Id"
-      maxlength="10"
-      [(ngModel)]="nationalId"
-    />
-    <button (click)="submitForm()">submit</button>
-  </form>
+      <div class="flex mb-3">
+        <span
+          class="inline-flex items-center px-3 text-sm text-gray-900 border border-r-0 border-gray-300 rounded-l-md rtl:border-r-1 rtl:rounded-r-md rtl:rounded-l-[0px]"
+        >
+          <img src="../../assets/sa.svg" width="20" height="20" />
+        </span>
+        <input
+          type="tel"
+          id="phone-input"
+          [(ngModel)]="phoneNumber"
+          class="rounded-none rounded-r-lg rtl:rounded-r-[0px] rtl:rounded-l-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5"
+          [placeholder]="'PHONE NO'"
+        />
+      </div>
+
+      <button
+        type="submit"
+        class="w-full mt-5 flex justify-center text-white bg-[#0036FF] hover:bg-[#0036FF]/90 focus:ring-4 focus:ring-[#0036FF]/50 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5"
+      >
+        Get Started
+      </button>
+    </form>
+  </div>
+  <div class="mt-10 m-auto">
+    <img src="../../assets/Logo Letter Mark.svg" style="width: 20rem" />
+  </div>
 </div>

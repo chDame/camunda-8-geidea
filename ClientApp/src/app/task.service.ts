@@ -29,7 +29,7 @@ export class TaskService {
     this.httpClient
       .post(`https://localhost:7009/api/tasks/${this.currentTask.jobKey}`, body)
       .subscribe((data: any) => {
-        this.currentTask(null);
+        this.currentTask = null;
         this.listOfTasks = this.listOfTasks.filter(
           (t) => t.jobKey != this.currentTask.jobKey
         );
