@@ -21,7 +21,7 @@ namespace tasklistDotNetReact.Services
       // get variables as declared (SimpleJobPayload)
       JsonNode variables = job.getVariables<JsonNode>();
 
-      if (variables["phoneNumber"]?.ToString() == "4511233331")
+      if (variables["phoneNumber"]?.ToString() == "451123333")
       {
         variables["phoneIdValid"] = false;
 
