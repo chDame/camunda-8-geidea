@@ -16,9 +16,14 @@ import { TaskService } from './task.service';
       <app-emailAndPassword></app-emailAndPassword>
       <app-otp></app-otp>
       <app-wizard></app-wizard> -->
-      <br/>
-      <hr/>
-      <button (click)="reset()">RESET</button>
+      <br />
+      <hr />
+      <button
+        class="w-50 mt-5 flex justify-center text-white bg-[#0036FF] hover:bg-[#0036FF]/90 focus:ring-4 focus:ring-[#0036FF]/50 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5"
+        (click)="reset()"
+      >
+        RESET
+      </button>
     </div>
   `,
 })
@@ -32,7 +37,7 @@ export class AdBannerComponent implements OnInit, OnDestroy {
   private clearTimer: VoidFunction | undefined;
   constructor(
     public signalR: SignalrService,
-    private taskService: TaskService,
+    private taskService: TaskService
   ) {}
   ngOnInit(): void {
     this.taskService.loadInitialTask();
@@ -49,7 +54,6 @@ export class AdBannerComponent implements OnInit, OnDestroy {
   }
 
   loadComponent(formKey: string) {
-    
     // this.currentAdIndex = (this.currentAdIndex + 1) % this.ads.length;
     const adItem = this.ads[formKey];
 
