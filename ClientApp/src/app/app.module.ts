@@ -15,6 +15,7 @@ import { OtpComponent } from './otp/otp.component';
 import { WizardComponent } from './wizard/wizard.component';
 import { SelectProductsComponent } from './select-products/select-products.component';
 import { SetupStoresComponent } from './setup-stores/setup-stores.component';
+import { BusinessDetailsComponent } from './business-details/business-details.component';
 
 @NgModule({
   imports: [BrowserModule, HttpClientModule, FormsModule],
@@ -32,6 +33,7 @@ import { SetupStoresComponent } from './setup-stores/setup-stores.component';
     WizardComponent,
     SelectProductsComponent,
     SetupStoresComponent,
+    BusinessDetailsComponent,
   ],
   bootstrap: [AppComponent],
 })

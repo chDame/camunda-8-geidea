@@ -17,17 +17,8 @@ export class NafathAuthenticationComponent implements OnInit {
 
   ngOnInit() {}
   checkNafath(): void {
-    if (this.nafathAuthentication)
       this.taskService.completeTask({
-        nafathAuthentication: this.nafathAuthentication,
+        nafathAuthentication: true,
       });
-    // this.httpCleint
-    //   .post('https://localhost:7009/api/tasks/jobKey', {
-    //     nafathAuthentication: this.nafathAuthentication,
-    //   })
-    //   .subscribe((data: any) => {
-    //     this.signalR.listenTasks(data.correlationId.toString());
-    //     console.log(data);
-    //   });
   }
 }

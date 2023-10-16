@@ -7,6 +7,7 @@ import { WizardComponent } from './wizard/wizard.component';
 import { CreateAccountComponent } from './createAccount/createAccount.component';
 import { SetupStoresComponent } from './setup-stores/setup-stores.component';
 import { SelectProductsComponent } from './select-products/select-products.component';
+import { BusinessDetailsComponent } from './business-details/business-details.component';
 
 @Injectable()
 export class AdService {
@@ -16,10 +17,12 @@ export class AdService {
       nafathAuthentication: new AdItem(NafathAuthenticationComponent),
       setupStores: new AdItem(WizardComponent),
       selectProducts: new AdItem(WizardComponent),
+      businessDetails: new AdItem(WizardComponent),
       checkOtp: new AdItem(OtpComponent),
       registerMailAndPassword: new AdItem(EmailAndPasswordComponent),
       wizardsetupStores: new AdItem(SetupStoresComponent),
       wizardselectProducts: new AdItem(SelectProductsComponent),
+      wizardbusinessDetails: new AdItem(BusinessDetailsComponent),
     };
   }
 }

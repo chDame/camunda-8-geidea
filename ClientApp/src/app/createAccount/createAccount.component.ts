@@ -23,7 +23,6 @@ export class CreateAccountComponent implements OnInit {
 
   ngOnInit() {}
   submitForm(): void {
-    debugger;
     this.httpCleint
       .post('https://localhost:7009/api/process/createAccount/start', {
         phoneNumber: this.phoneNumber,
