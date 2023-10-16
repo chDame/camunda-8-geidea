@@ -5,51 +5,65 @@ using Zeebe.Client.Accelerator.Attributes;
 
 namespace tasklistDotNetReact.Services
 {
-	[JobType("checkIfPhoneIsValidWithId")]
-	public class PhoneIdValidWorker : IAsyncZeebeWorkerWithResult<JsonNode>
-	{
-		private readonly IDueDilligenceService dueDilligenceService;
+  [JobType("checkIfPhoneIsValidWithId")]
+  public class PhoneIdValidWorker : IAsyncZeebeWorkerWithResult<JsonNode>
+  {
+    private readonly IDueDilligenceService dueDilligenceService;
+    private readonly ZeebeClientProvider _zeebeClientProvider;
 
-		public PhoneIdValidWorker(IDueDilligenceService dueDilligenceService)
-		{
-			this.dueDilligenceService = dueDilligenceService;
-		}
-		public async Task<JsonNode> HandleJob(ZeebeJob job, CancellationToken cancellationToken)
-		{
-			// get variables as declared (SimpleJobPayload)
-			JsonNode variables = job.getVariables<JsonNode>();
+    public PhoneIdValidWorker(IDueDilligenceService dueDilligenceService, ZeebeClientProvider zeebeClientProvider)
+    {
+      this.dueDilligenceService = dueDilligenceService;
+      _zeebeClientProvider = zeebeClientProvider;
+    }
+    public async Task<JsonNode> HandleJob(ZeebeJob job, CancellationToken cancellationToken)
+    {
+      // get variables as declared (SimpleJobPayload)
+      JsonNode variables = job.getVariables<JsonNode>();
 
-			if (variables["phoneNumber"]?.ToString() == "4511233331")
-			{
-				variables["phoneIdValid"] = false;
+      if (variables["phoneNumber"]?.ToString() == "4511233331")
+      {
+        variables["phoneIdValid"] = false;
 
-				return variables;
-			}
+        return variables;
+      }
+
+      try
+      {
+        var lead = await dueDilligenceService.LeadCreate_ELMCheck(new LeadValidationRequest()
+        {
+          NationalId = variables["nationalId"]!.ToString(),
+          CountryPrefix = "+966",
+          PhoneNumber = variables["phoneNumber"]!.ToString()
+        });
+
+        variables["phoneIdValid"] = (lead is not null && lead.ElmCheck.HasValue && lead.ElmCheck.Value);
 
 
-			var lead = await dueDilligenceService.LeadCreate_ELMCheck(new LeadValidationRequest()
-			{
-				NationalId = variables["nationalId"]!.ToString(),
-				CountryPrefix = "+966",
-				PhoneNumber = variables["phoneNumber"]!.ToString()
-			});
+        return variables;
+      }
+      catch (Exception e)
+      {
+        await this._zeebeClientProvider.GetZeebeClient().NewPublishMessageCommand()
+          .MessageName("ErrorValidation").CorrelationKey(variables["correlationId"].ToString())
+          .MessageId("ErrorValidation")
+          .Variables("{ \"ExceptionValidation\":  \""+e.Message+"\" }").Send();
+        return null;
 
-			variables["phoneIdValid"] = (lead is not null && lead.ElmCheck.HasValue && lead.ElmCheck.Value);
+      }
+    }
+  }
 
-			return variables;
-		}
-	}
-
-	[JobType("createMmsTaskForSale")]
-	public class CreateMmsTaskForSaleWorker : IAsyncZeebeWorkerWithResult<JsonNode>
-	{
-		public CreateMmsTaskForSaleWorker()
-		{
-		}
-		public async Task<JsonNode> HandleJob(ZeebeJob job, CancellationToken cancellationToken)
-		{
-			return null;
-		}
-	}
+  [JobType("createMmsTaskForSale")]
+  public class CreateMmsTaskForSaleWorker : IAsyncZeebeWorkerWithResult<JsonNode>
+  {
+    public CreateMmsTaskForSaleWorker()
+    {
+    }
+    public async Task<JsonNode> HandleJob(ZeebeJob job, CancellationToken cancellationToken)
+    {
+      return null;
+    }
+  }
 }
 
