@@ -5,6 +5,13 @@ import { SignalrService } from '../signalR.service';
 @Component({
   selector: 'app-createAccount',
   templateUrl: './createAccount.component.html',
+  styles: [
+    `
+      :host {
+        width: 100%;
+      }
+    `,
+  ],
 })
 export class CreateAccountComponent implements OnInit {
   phoneNumber: string = '';
@@ -16,11 +23,12 @@ export class CreateAccountComponent implements OnInit {
 
   ngOnInit() {}
   submitForm(): void {
+    debugger;
     this.httpCleint
       .post('https://localhost:7009/api/process/createAccount/start', {
         phoneNumber: this.phoneNumber,
         nationalId: this.nationalId,
-        initiator: "demo"
+        initiator: 'demo',
       })
       .subscribe((data: any) => {
         this.listenAboutTasksRequest(data.correlationId.toString());

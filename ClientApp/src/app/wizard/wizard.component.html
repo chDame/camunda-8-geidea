@@ -1,6 +1,121 @@
-<div style="width: 200px; height: 100px; background-color: beige">
+<!-- <div style="width: 200px; height: 100px; background-color: beige">
   <p *ngFor="let step of steps">
     <span (click)="selectWizardStep(step)">{{ step }}</span>
   </p>
   <ng-template adHost></ng-template>
+</div> -->
+<div style="width: 100%; display: flex; justify-content: space-between">
+  <ol
+    class="items-center w-full space-x-4 flex sm:block sm:space-y-8 sm:space-x-0"
+  >
+    <li
+      class="inprogress-step flex mt-[2px] sm:mt-[10px]"
+      *ngFor="let step of steps"
+      (click)="selectWizardStep(step)"
+    >
+      <span class="relative items-center justify-center rounded-full me-2">
+        <img
+          class="mb-[2px] sm:mb-[10px] max-w-[32px] sm:max-w-[48px]"
+          [src]="stepperImages.inprogress"
+          alt="stepperImage"
+        />
+
+        <div
+          class="absolute w-[1px] w-[1px] h-[24px] border-l border-dashed border-gray-700 start-[50%] hidden sm:block"
+        ></div>
+      </span>
+      <div class="flex flex-col">
+        <h3
+          class="text-[12px] sm:text-[14px] leading-tight text-ga-blue-2100 font-semibold"
+        >
+          {{ step }}
+        </h3>
+      </div>
+    </li>
+    <!-- <li class="onhold-step flex mt-[2px] sm:mt-[10px]">
+    <span class="relative items-center justify-center rounded-full me-2">
+      <img
+        class="mb-[2px] sm:mb-[10px] max-w-[32px] sm:max-w-[48px]"
+        [src]="stepperImages.onhold"
+        alt="stepperImage"
+      />
+
+      <div
+        class="absolute w-[1px] w-[1px] h-[24px] border-l border-dashed border-gray-700 start-[50%] hidden sm:block"
+      ></div>
+    </span>
+    <div class="flex flex-col">
+      <h3
+        class="text-[12px] sm:text-[14px] leading-tight text-ga-gray-1200 font-medium"
+      >
+        {{ "BUSINESS_DETAILS" }}
+      </h3>
+      <p class="hidden sm:inline-flex text-[12px]">
+        {{ "BUSINESS_DETAILS_DESCRIPTION" }}
+      </p>
+    </div>
+  </li>
+  <li class="onhold-step flex mt-[2px] sm:mt-[10px]">
+    <span class="relative items-center justify-center rounded-full me-2">
+      <img
+        class="mb-[2px] sm:mb-[10px] max-w-[32px] sm:max-w-[48px]"
+        [src]="stepperImages.onhold"
+        alt="stepperImage"
+      />
+
+      <div
+        class="absolute w-[1px] w-[1px] h-[24px] border-l border-dashed border-gray-700 start-[50%] hidden sm:block"
+      ></div>
+    </span>
+    <div class="flex flex-col">
+      <h3 class="text-[12px] sm:text-[14px] leading-tight">
+        {{ "SETUP_STORES" }}
+      </h3>
+      <p class="hidden sm:inline-flex text-[12px]">
+        {{ "SETUP_STORES_DESCRIPTION" }}
+      </p>
+    </div>
+  </li>
+  <li class="onhold-step flex">
+    <span class="relative items-center justify-center rounded-full me-2">
+      <img
+        class="mb-[2px] sm:mb-[10px] max-w-[32px] sm:max-w-[48px]"
+        [src]="stepperImages.onhold"
+        alt="stepperImage"
+      />
+
+      <div
+        class="absolute w-[1px] w-[1px] h-[24px] border-l border-dashed border-gray-700 start-[50%] hidden sm:block"
+      ></div>
+    </span>
+    <div class="flex flex-col">
+      <h3 class="text-[12px] sm:text-[14px] leading-tight">
+        {{ "PAYOUT_DETAILS" }}
+      </h3>
+      <p class="hidden sm:inline-flex text-[12px]">
+        {{ "PAYOUT_DETAILS_DESCRIPTION" }}
+      </p>
+    </div>
+  </li>
+  <li class="onhold-step flex">
+    <span class="relative items-center justify-center rounded-full me-2">
+      <img
+        class="mb-[2px] sm:mb-[10px] max-w-[32px] sm:max-w-[48px]"
+        [src]="stepperImages.onhold"
+        alt="stepperImage"
+      />
+    </span>
+    <div class="flex flex-col">
+      <h3 class="text-[12px] sm:text-[14px] leading-tight">
+        {{ "REVIEW_AND_CONFIRM" }}
+      </h3>
+      <p class="hidden sm:inline-flex text-[12px]">
+        {{ "REVIEW_AND_CONFIRM_DESCRIPTION" }}
+      </p>
+    </div>
+  </li> -->
+  </ol>
+  <div>
+    <ng-template adHost></ng-template>
+  </div>
 </div>

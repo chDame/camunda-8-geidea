@@ -9,14 +9,16 @@
         and accepting payments. <br />
       </p>
     </div>
-    <form data-testid="form" (ngSubmit)="submitForm()">
+    <form>
       <div class="mb-3">
         <input
           type="text"
           id="National-input"
           [(ngModel)]="nationalId"
           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:!border-[#3f83f8] w-full p-2.5"
-          [placeholder]="'national Id'"
+          [placeholder]="'National Id'"
+          maxlength="10"
+          name="nationalId"
         />
       </div>
 
@@ -31,11 +33,14 @@
           id="phone-input"
           [(ngModel)]="phoneNumber"
           class="rounded-none rounded-r-lg rtl:rounded-r-[0px] rtl:rounded-l-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5"
-          [placeholder]="'PHONE NO'"
+          [placeholder]="'phone number '"
+          maxlength="9"
+          name="phoneNumber"
         />
       </div>
 
       <button
+        (click)="submitForm()"
         type="submit"
         class="w-full mt-5 flex justify-center text-white bg-[#0036FF] hover:bg-[#0036FF]/90 focus:ring-4 focus:ring-[#0036FF]/50 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5"
       >

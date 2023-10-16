@@ -17,7 +17,7 @@ import { SelectProductsComponent } from './select-products/select-products.compo
 import { SetupStoresComponent } from './setup-stores/setup-stores.component';
 
 @NgModule({
-  imports: [BrowserModule, HttpClientModule, FormsModule, ReactiveFormsModule],
+  imports: [BrowserModule, HttpClientModule, FormsModule],
   providers: [AdService],
   declarations: [
     AppComponent,
@@ -28,11 +28,11 @@ import { SetupStoresComponent } from './setup-stores/setup-stores.component';
     CreateAccountComponent,
     NafathAuthenticationComponent,
     EmailAndPasswordComponent,
-      OtpComponent,
-      WizardComponent,
-      SelectProductsComponent,
-      SetupStoresComponent
-   ],
+    OtpComponent,
+    WizardComponent,
+    SelectProductsComponent,
+    SetupStoresComponent,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

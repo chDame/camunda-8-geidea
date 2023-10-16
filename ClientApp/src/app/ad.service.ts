@@ -10,7 +10,7 @@ import { SelectProductsComponent } from './select-products/select-products.compo
 
 @Injectable()
 export class AdService {
-  getAds():any {
+  getAds(): any {
     return {
       creatAccount: new AdItem(CreateAccountComponent),
       nafathAuthentication: new AdItem(NafathAuthenticationComponent),

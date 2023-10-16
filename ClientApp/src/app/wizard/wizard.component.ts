@@ -10,6 +10,12 @@ import { AdComponent } from '../ad.component';
 })
 export class WizardComponent implements OnInit {
   steps: any[] = [];
+  stepperImages: any = {
+    done: '../../assets/done-step.svg',
+    inprogress: '../../assets/inprogress-step.svg',
+    dimmed: '../../assets/dimmed-step.svg',
+    onhold: '../../assets/hold-step.svg',
+  };
 
   @ViewChild(AdDirective, { static: true }) adHost!: AdDirective;
 
@@ -22,18 +28,16 @@ export class WizardComponent implements OnInit {
     }
   }
 
-
   selectWizardStep(step: string) {
     this.taskService.selectWizardStep(step);
     this.loadComponent(this.taskService.getCurrentTask().formKey);
   }
 
-
   loadComponent(formKey: string) {
     console.log(formKey);
 
     // this.currentAdIndex = (this.currentAdIndex + 1) % this.ads.length;
-    const adItem = this.adService.getAds()["wizard"+formKey];
+    const adItem = this.adService.getAds()['wizard' + formKey];
 
     const viewContainerRef = this.adHost.viewContainerRef;
     viewContainerRef.clear();
