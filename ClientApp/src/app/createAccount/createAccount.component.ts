@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { SignalrService } from '../signalR.service';
+import { TaskService } from '../task.service';
 
 @Component({
   selector: 'app-createAccount',
@@ -18,11 +19,13 @@ export class CreateAccountComponent implements OnInit {
   nationalId: string = '';
   constructor(
     private httpCleint: HttpClient,
-    private signalR: SignalrService
+    private signalR: SignalrService,
+    private taskService: TaskService
   ) {}
 
   ngOnInit() {}
   submitForm(): void {
+    this.taskService.currentTask = null;
     this.httpCleint
       .post('https://localhost:7009/api/process/createAccount/start', {
         phoneNumber: this.phoneNumber,
@@ -30,6 +33,7 @@ export class CreateAccountComponent implements OnInit {
         initiator: 'demo',
       })
       .subscribe((data: any) => {
+        localStorage.setItem("poCCorrelationId", data.correlationId.toString());
         this.listenAboutTasksRequest(data.correlationId.toString());
         console.log(data);
       });

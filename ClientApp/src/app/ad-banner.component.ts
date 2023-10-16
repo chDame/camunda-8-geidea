@@ -16,6 +16,9 @@ import { TaskService } from './task.service';
       <app-emailAndPassword></app-emailAndPassword>
       <app-otp></app-otp>
       <app-wizard></app-wizard> -->
+      <br/>
+      <hr/>
+      <button (click)="reset()">RESET</button>
     </div>
   `,
 })
@@ -29,10 +32,15 @@ export class AdBannerComponent implements OnInit, OnDestroy {
   private clearTimer: VoidFunction | undefined;
   constructor(
     public signalR: SignalrService,
-    private taskService: TaskService
+    private taskService: TaskService,
   ) {}
   ngOnInit(): void {
-    this.loadComponent('creatAccount');
+    this.taskService.loadInitialTask();
+    this.getAds();
+  }
+
+  reset() {
+    this.taskService.reset();
     this.getAds();
   }
 
@@ -41,9 +49,7 @@ export class AdBannerComponent implements OnInit, OnDestroy {
   }
 
   loadComponent(formKey: string) {
-    console.log(formKey);
-    console.log(this.ads);
-
+    
     // this.currentAdIndex = (this.currentAdIndex + 1) % this.ads.length;
     const adItem = this.ads[formKey];
 
@@ -61,8 +67,6 @@ export class AdBannerComponent implements OnInit, OnDestroy {
       if (data && data['formKey']) {
         this.taskService.AddTask(data);
         this.loadComponent(data['formKey']);
-
-        console.log(data);
       }
     });
   }

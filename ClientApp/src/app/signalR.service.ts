@@ -67,6 +67,7 @@ export class SignalrService {
     // });
     this.hubConnection.on('newTask', (data: any) => {
       console.log('message received from Hub');
+      console.log(data);
       // let newValue = this.messages.value;
       // newValue.push(data);
       this.messages.next(data);
