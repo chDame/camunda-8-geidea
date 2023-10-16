@@ -44,10 +44,12 @@ namespace tasklistDotNetReact.Services
       }
       catch (Exception e)
       {
-        await this._zeebeClientProvider.GetZeebeClient().NewPublishMessageCommand()
+        await this._zeebeClientProvider.GetZeebeClient().NewThrowErrorCommand(job.Key).ErrorCode("ErrorValidation").ErrorMessage(e.Message).Send();
+
+        /*await this._zeebeClientProvider.GetZeebeClient().NewPublishMessageCommand()
           .MessageName("ErrorValidation").CorrelationKey(variables["correlationId"].ToString())
           .MessageId("ErrorValidation")
-          .Variables("{ \"ExceptionValidation\":  \""+e.Message+"\" }").Send();
+          .Variables("{ \"ExceptionValidation\":  \""+e.Message+"\" }").Send();*/
         return null;
 
       }
