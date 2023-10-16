@@ -55,24 +55,22 @@ namespace tasklistDotNetReact.Controllers
 		[HttpPost("{bpmnProcessId}/start")]
 		public async Task<JsonResult> CreateProcessInstance(string bpmnProcessId, [FromBody] Dictionary<string, object> variables)
 		{
-			//			//Get IP address
-			//#pragma warning disable 8602
-			var userIP = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+			//Get IP address
+			var userIP = Request.HttpContext.Connection.RemoteIpAddress!.ToString();
 
-	  //#pragma warning restore 8602
+			// Retreive server / local IP address
+			//var feature = HttpContext.Features.Get<IHttpConnectionFeature>();
+			//var userIP = feature?.LocalIpAddress?.ToString();
+			if (userIP == "::1")
+			{
+				userIP = GetIPAddress();
+			}
+			Console.WriteLine(userIP);
 
-	  // Retreive server / local IP address
-	  //var feature = HttpContext.Features.Get<IHttpConnectionFeature>();
-	  //var userIP = feature?.LocalIpAddress?.ToString();
-      if (userIP=="::1")
-      {
-		userIP = GetIPAddress();
-	  }
-	  Console.WriteLine(userIP);
-
-	  var correlationId = Guid.NewGuid().ToString();
+			var correlationId = Guid.NewGuid().ToString();
 			variables.Add("correlationId", correlationId);
 			variables.Add("merchantIP", userIP);
+
 			var processInstance = await _zeebeClientProvider.GetZeebeClient()
 				.NewCreateProcessInstanceCommand()
 				.BpmnProcessId(bpmnProcessId)
@@ -89,21 +87,21 @@ namespace tasklistDotNetReact.Controllers
 			return new JsonResult(await operateService.ProcessDefinitions());
 		}
 
-	private static string GetIPAddress()
-	{
-	  String address = "";
-	  WebRequest request = WebRequest.Create("http://checkip.dyndns.org/");
-	  using (WebResponse response = request.GetResponse())
-	  using (StreamReader stream = new StreamReader(response.GetResponseStream()))
-	  {
-		address = stream.ReadToEnd();
-	  }
+		private static string GetIPAddress()
+		{
+			String address = "";
+			WebRequest request = WebRequest.Create("http://checkip.dyndns.org/");
+			using (WebResponse response = request.GetResponse())
+			using (StreamReader stream = new StreamReader(response.GetResponseStream()))
+			{
+				address = stream.ReadToEnd();
+			}
 
-	  int first = address.IndexOf("Address: ") + 9;
-	  int last = address.LastIndexOf("</body>");
-	  address = address.Substring(first, last - first);
+			int first = address.IndexOf("Address: ") + 9;
+			int last = address.LastIndexOf("</body>");
+			address = address.Substring(first, last - first);
 
-	  return address;
+			return address;
+		}
 	}
-  }
 }
