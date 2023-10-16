@@ -16,6 +16,7 @@ import { WizardComponent } from './wizard/wizard.component';
 import { SelectProductsComponent } from './select-products/select-products.component';
 import { SetupStoresComponent } from './setup-stores/setup-stores.component';
 import { BusinessDetailsComponent } from './business-details/business-details.component';
+import { ErrorValidationComponent } from './error-validation/error-validation.component';
 
 @NgModule({
   imports: [BrowserModule, HttpClientModule, FormsModule],
@@ -34,6 +35,7 @@ import { BusinessDetailsComponent } from './business-details/business-details.co
     SelectProductsComponent,
     SetupStoresComponent,
     BusinessDetailsComponent,
+    ErrorValidationComponent,
   ],
   bootstrap: [AppComponent],
 })
